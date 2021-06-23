@@ -6,7 +6,7 @@ import Header from "./components/Header";
 import { getProducts } from "./actions/productsActions";
 import Product from "./components/Product";
 
-const App = ({ categories, products, dispatch }) => {
+const App = ({ categories, products, loading_info, dispatch }) => {
   useEffect(() => {
     dispatch(getAllCategories());
   }, [dispatch]);
@@ -27,11 +27,18 @@ const App = ({ categories, products, dispatch }) => {
           handleCategoryChange={handleCategoryChange}
         />
       </div>
+      {loading_info.error && <p className="errorMsg">{loading_info.error}</p>}
       <div>
         <ul className="products">
-          {products.map(({ name, image }) => {
-            return <Product key={name} name={name} image={image} />;
-          })}
+          {loading_info.loading ? (
+            <p>Loading...</p>
+          ) : (
+            <React.Fragment>
+              {products.map(({ name, image }) => {
+                return <Product key={name} name={name} image={image} />;
+              })}
+            </React.Fragment>
+          )}
         </ul>
       </div>
     </div>
@@ -39,11 +46,12 @@ const App = ({ categories, products, dispatch }) => {
 };
 
 const mapStateToProps = (state) => {
-  const { categories, products } = state;
+  const { categories, products, loading_info } = state;
 
   return {
     categories,
     products,
+    loading_info,
   };
 };
 
